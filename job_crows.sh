@@ -6,7 +6,7 @@
 # Tasks: 
 #   1) 
 #
-# Last updated: 4 June 2026
+# Last updated: 17 June 2026
 
 
 # ------------------------------------------------------------
@@ -119,7 +119,7 @@ printf "num_obs\t${NUM_OBS}\n" >> "$FICHIER_INFO"
 
 # ----------------------------------------------------------------------------- # 
 # DÉFINIR LE Python UTILISÉ
-PYTHON=/data/chavezs2/conda/envs/surgeNMFenv/bin/python
+PYTHON=/data/$USER/conda/envs/surgeNMFenv/bin/python
 
 
 # ----------------------------------------------------------------------------- # 

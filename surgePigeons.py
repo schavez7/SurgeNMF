@@ -1,8 +1,8 @@
-# surgeDataGenerator.py
+# surgePigeons.py
 # 
 #   Créer deux ensembles de data: une de Gausse et l'autre de Poisson
 # 
-# Last modified: 29 May 2026
+# Last modified: 17 Juin 2026
 # ----------------------------------------------------------------- #
 
 import numpy as np 
@@ -36,7 +36,7 @@ if num_sigs < 2:
 rng = np.random.default_rng(seed)
 
 # Télécharger la réference
-ref = pd.read_csv("/data/chavezs2/surgeNMF/Reference_SBS96_COSMIC_Catalogue_Ordered.txt", sep="\t", header=0, index_col=0)
+ref = pd.read_csv(f"/data/{os.getenv('USER')}/surgeNMF/Reference_SBS96_COSMIC_Catalogue_Ordered.txt", sep="\t", header=0, index_col=0)
 ref_colonnes = ref.columns
 
 # Signatures aléatoires de COSMIC 

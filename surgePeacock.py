@@ -3,7 +3,7 @@
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt
-# import os
+import os
 import string
 from matplotlib.backends.backend_pdf import PdfPages
 from scipy.spatial.distance import cdist
@@ -222,7 +222,7 @@ def plot_against_cosmic(
 
     # ----------------------------------------------------------------- #
     # Télécharger les signatures cosmic 
-    ref = pd.read_csv("/data/chavezs2/surgeNMF/Reference_SBS96_COSMIC_Catalogue_Ordered.txt", sep="\t", index_col=0)
+    ref = pd.read_csv(f"/data/{os.getenv('USER')}/surgeNMF/Reference_SBS96_COSMIC_Catalogue_Ordered.txt", sep="\t", index_col=0)
     
     # Déterminer les distances entre chaque colonne
     dist_mat = cdist(W.T, ref.T, "cosine")
