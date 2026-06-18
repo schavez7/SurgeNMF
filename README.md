@@ -3,7 +3,7 @@ Minimum-volume non-negative matrix factorisation for mutational signature analys
 
 Last updated README: 17 June 2026
 
-## 📁 Les fichiers
+## 📁 Les fichiers 🐍 🐦 🐧 🦅 🦜 🦢 🦉 🐓 🦩 🦆 🐤
 
 ### 🔧 Scripts Bash 
 
@@ -12,14 +12,14 @@ Last updated README: 17 June 2026
 | `job_starling.sh` | Lance une seule instance de NMF |
 | `job_crows.sh` | Lance l'analyse complète avec bootstrap et grid search |
 
-### 🐍 Scripts Python
+### Scripts Python
 | Fichier | Short Description |
 |---|---|
 | `surgeNMF.py` | Classe NMF avec toutes les méthodes |
-| `surgePigeons.py` | Génère les données simulées |
+| `surgePigeons.py` | 🕊️ Génère les données simulées |
 | `surgeStarling.py` | Exécute les quatre versions de NMF |
-| `surgeCrows.py` | Clustering et sélection optimale |
-| `surgePeacock.py` | Visualisation des signatures |
+| `surgeCrows.py` | 🐦‍⬛ Clustering et sélection optimale |
+| `surgePeacock.py` | 🦚 Visualisation des signatures |
 
 ### Fichier additionnel 
 | Fichier | Short Description |
