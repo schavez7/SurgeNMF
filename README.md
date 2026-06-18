@@ -44,10 +44,14 @@ bash job_test_full_analysis.sh --dossier Results --num_sigs 4 --num_obs 250 (--s
 ## Les méthodes de NMF dans `surgeNMF.py`
 
 🐦 surgeNMF/ 
-* Ἄσκησις α´ — Standard NMF (Frobenius norm)
-* Ἄσκησις β´ — Standard NMF (Kullback-Leibler divergence)
-* Ἄσκησις γ´ — MV-NMF (assuming Gaussian data)
-* Ἄσκησις δ´ — MV-NMF (assuming Poisson data)
+*  Standard NMF (Frobenius norm)
+*  Standard NMF (Kullback-Leibler divergence)
+*  MV-NMF (assuming Gaussian data)
+*  MV-NMF (assuming Poisson data)
+
+## Travail pour Serge 
+* Ἄσκησις α´ - Verifier que VR-NMF fonctionne comme il doit
+* Ἄσκησις β´ - Créer des fichiers d'exemple pour data réelle 
 
 ## Reférences
 
