@@ -9,8 +9,8 @@ Last updated README: 17 June 2026
 
 | Fichier | Short Description |
 |---|---|
-| `job_starling.sh` | Lance une seule instance de NMF |
-| `job_crows.sh` | Lance l'analyse complète avec bootstrap et grid search |
+| `job_test_one_nmf.sh` | Lance une seule instance de NMF |
+| `job_test_full_analysis.sh` | Lance l'analyse complète avec bootstrap et grid search |
 
 ### Scripts Python
 | Fichier | Short Description |
@@ -20,6 +20,8 @@ Last updated README: 17 June 2026
 | `surgeStarling.py` | Exécute les quatre versions de NMF |
 | `surgeCrows.py` | 🐦‍⬛ Clustering et sélection optimale |
 | `surgePeacock.py` | 🦚 Visualisation des signatures |
+| `test_one_nmf.py` | Tests just one nmf instance to ensure method works |
+| `test_full_analysis.py` | Tests the grid search for num of sigs and λ value on bootstrapped data |
 
 ### Fichier additionnel 
 | Fichier | Short Description |
@@ -28,15 +30,15 @@ Last updated README: 17 June 2026
 ​
 
 ## Comment les éxecuter 
-### `job_starling.sh`
+### `job_test_one_nmf.sh`
 
 ```bash
-bash job_starling.sh --dossier Results --num_sigs 4 --num_obs 250 (--seed 1)
+bash job_test_one_nmf.sh --dossier Results --num_sigs 4 --num_obs 250 (--seed 1)
 ```
 
-### `job_crows.sh`
+### `job_test_full_analysis.sh`
 ```bash
-bash job_crows.sh --dossier Results --num_sigs 4 --num_obs 250 (--seed 42)
+bash job_test_full_analysis.sh --dossier Results --num_sigs 4 --num_obs 250 (--seed 42)
 ```
 
 ## Les méthodes de NMF dans `surgeNMF.py`
