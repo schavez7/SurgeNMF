@@ -10,8 +10,8 @@
 
 
 # ------------------------------------------------------------
-# BON USAGE: bash job_crows.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]
-# EXEMPLE:   bash job_crows.sh --dossier Results   --num_sigs 4          --num_obs 250        --seed 42
+# BON USAGE: bash job_test_full_analysis.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]
+# EXEMPLE:   bash job_test_full_analysis.sh --dossier Results   --num_sigs 4          --num_obs 250        --seed 42
 # ------------------------------------------------------------
 
 
@@ -90,7 +90,7 @@ fi
 # Quitter seulement après avoir affiché TOUS les arguments manquants
 if [ "$ERROR" -eq 1 ]; then
     echo ""
-    echo "Usage: bash job_crows.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]"
+    echo "Usage: bash job_test_full_analysis.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]"
     exit 1
 fi
 
@@ -129,5 +129,5 @@ PYTHON=/data/$USER/conda/envs/surgeNMFenv/bin/python
 $PYTHON $DIR_MAIN/surgePigeons.py $FICHIER_INFO $DIR_DATA
 
 # --- Δεύτερος: Exécuter un NMF pour vérifier le code
-$PYTHON $DIR_MAIN/surgeParallel.py $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS_GAUSSIAN $DIR_SUB_RESULTATS_POISSON 
+$PYTHON $DIR_MAIN/test_full_analysis.py $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS_GAUSSIAN $DIR_SUB_RESULTATS_POISSON 
 

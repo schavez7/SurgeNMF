@@ -9,8 +9,8 @@
 
 
 # ------------------------------------------------------------
-# BON USAGE: bash job_main.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]
-# EXEMPLE:   bash job_starling.sh --dossier Results   --num_sigs 4          --num_obs 250        --seed 1
+# BON USAGE: bash job_test_one_nmf.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]
+# EXEMPLE:   bash job_test_one_nmf.sh --dossier Results   --num_sigs 4          --num_obs 250        --seed 1
 # ------------------------------------------------------------
 
 
@@ -89,7 +89,7 @@ fi
 # Quitter seulement après avoir affiché TOUS les arguments manquants
 if [ "$ERROR" -eq 1 ]; then
     echo ""
-    echo "Usage: bash job_main.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]"
+    echo "Usage: bash job_test_one_nmf.sh --dossier <dossier> --num_sigs <num_sigs> --num_obs <num_obs> [--seed <seed>]"
     exit 1
 fi
 
@@ -128,7 +128,7 @@ PYTHON=/data/$USER/conda/envs/surgeNMFenv/bin/python
 $PYTHON $DIR_MAIN/surgePigeons.py $FICHIER_INFO $DIR_DATA
 
 # --- Δεύτερος: Exécuter un NMF pour vérifier le code
-$PYTHON $DIR_MAIN/surgeStarling.py $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS_GAUSSIAN $DIR_SUB_RESULTATS_POISSON 
+$PYTHON $DIR_MAIN/test_one_nmf.py $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS_GAUSSIAN $DIR_SUB_RESULTATS_POISSON 
 
 
 # # --- Exécuter le code
