@@ -82,7 +82,7 @@ os.makedirs(output_sigs_dir, exist_ok=True)
 
 # -------------------------------------------------------------------------------- #
 # PARAMÈTRES
-lam = 1e-4 
+lam = 0.0 
 max_iterations_general = 5000
 max_iterations_D = 5
 max_iterations_S = 5

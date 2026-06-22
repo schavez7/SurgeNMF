@@ -190,6 +190,7 @@ def save_info(
         num_sigs,
         avgSilWidth,
         dir_results,
+        lam=None,
         cosmic=False
 ):
     # D'abord, créer le sous-répertoire pour ce résultat
@@ -200,8 +201,10 @@ def save_info(
     os.makedirs(dir_sous, exist_ok=True)
 
     # Sauvegarder le valeur de avgSilWidth
-    fichier = os.path.join(dir_sous, "avgsilhouette_info.txt")
+    fichier = os.path.join(dir_sous, "systeme_info.txt")
     with open(fichier, "w") as f:
+        if lam is not None:
+            f.write(f"lam\t{lam}\n")
         f.write(f"avgSilhouetteWidth\t{avgSilWidth}\n")
 
     # Sauvegarder les denovo signatures
@@ -285,8 +288,8 @@ class Crows:
 
         # Lambda values to search 
         if Lambdas is None:
-            self.Lambdas = [1, 5e-1, 1e-1, 5e-2, 1e-2, 5e-3, 1e-3, 5e-4, 1e-4, 5e-5, 1e-5]
-            # self.Lambdas = [1, 5e-1]
+            # self.Lambdas = [1, 5e-1, 1e-1, 5e-2, 1e-2, 5e-3, 1e-3, 5e-4, 1e-4, 5e-5, 1e-5]
+            self.Lambdas = [1, 5e-1, 1e-1, 5e-2]
         else:
             self.Lambdas = Lambdas
 
@@ -354,7 +357,7 @@ class Crows:
                 # Sauvegarder la meilleure solution pour ce num_sigs 
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
                 Wdf = pd.DataFrame(best_W_per_sig[num_sigs], index=self.data_index, columns=which_sigs)
-                save_info(Wdf, num_sigs, best_score, dir_results=self.dir_results)
+                save_info(Wdf, num_sigs, best_score, dir_results=self.dir_results, lam=best_lam)
                 print(f" For num_sigs={num_sigs}: optimal lam={best_lam}, score={best_score:.4f}")
 
             # Trouver la solution globalement optimale 
@@ -372,7 +375,7 @@ class Crows:
             # Sauvegarder la solution globalement optimale
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
             Wdf = pd.DataFrame(best_W_per_sig[optimal_num_sigs], index=self.data_index, columns=which_sigs)
-            save_info(Wdf, optimal_num_sigs, optimal_score, dir_results=self.dir_results, cosmic=True)
+            save_info(Wdf, optimal_num_sigs, optimal_score, dir_results=self.dir_results, lam=optimal_lam, cosmic=True)
             print(f"\n  Optimal VR: num_sigs={optimal_num_sigs}, lam={optimal_lam}, score={optimal_score:.4f}")
 
 
@@ -432,7 +435,7 @@ class Crows:
 
         self.__choose_optimal(Wall_dict, version, Scores)
 
-        # Save each version 
+        # Save each version ?
         print("\nGood here")
     
 

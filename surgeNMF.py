@@ -187,13 +187,15 @@ class NMF:
         self.W_signatures_mat_init = self.W_signatures_mat_init / self.W_signatures_mat_init.sum(axis=0)
 
         # 2. Create initial exposure matrix H 
-        self.H_exposures_mat_init  = self.rng.uniform(0, self.X_data_mat_adj.max(), size=(self.num_sigs, self.num_obs_adj)) 
+        # self.H_exposures_mat_init  = self.rng.uniform(0, self.X_data_mat_adj.max(), size=(self.num_sigs, self.num_obs_adj)) 
+        self.H_exposures_mat_init  = self.rng.uniform(0, 1, size=(self.num_sigs, self.num_obs_adj)) 
 
         # 3. Create the sqrt matrix based on exposure matrix and the orthogonal matrix 
         # self.D_exposures_sqrt_mat_init = self.rng.uniform(0, 1, size=(self.num_sigs, self.num_sigs))
         self.D_exposures_sqrt_mat_init = self.H_exposures_mat_init @ self.H_exposures_mat_init.T
         R_u, R_d, _ = np.linalg.svd(self.D_exposures_sqrt_mat_init)
-        self.D_exposures_sqrt_mat_init        = -R_u * np.sqrt(R_d)
+        self.D_exposures_sqrt_mat_init = -R_u * np.sqrt(R_d)
+        self.D_exposures_sqrt_mat_init[self.D_exposures_sqrt_mat_init < 0] = 0.0
         self.Q_Procrustes_orthogonal_mat_init = np.eye(self.num_vars_adj,M=self.num_sigs,dtype=float)
         # self.Q_Procrustes_orthogonal_mat_init = np.zeros((self.num_vars_adj, self.num_sigs))
         # self.Q_Procrustes_orthogonal_mat_init[:self.num_sigs,:self.num_sigs] = np.eys(num_sigs)
@@ -334,7 +336,7 @@ class NMF:
             tolerance = tolerance
         # Update W and H alternatively
         W_temp = self.W_signatures_mat_init.copy()
-        H_temp = self.H_exposures_mat_init.copy()
+        H_temp = self.X_data_mat_adj.max() * self.H_exposures_mat_init.copy()
         
         stability_eps = 0.01 * H_temp.max()
         
@@ -441,8 +443,8 @@ class NMF:
                                                                 max_iterations_D=max_iterations_D,
                                                                 max_iterations_S=max_iterations_S, 
                                                                 tolerance=tolerance,
-                                                                W=W,
-                                                                H=H
+                                                                W_input=W,
+                                                                H_input=H
                                                                 )
 
     def volume_regularisation_NMF_Poisson(
@@ -494,8 +496,8 @@ class NMF:
                                                                max_iterations_D=max_iterations_D,
                                                                max_iterations_S=max_iterations_S, 
                                                                tolerance=tolerance,
-                                                               W=W,
-                                                               H=H
+                                                               W_input=W,
+                                                               H_input=H
                                                               )
 
     def __volume_regularisation_NMF(
@@ -507,8 +509,8 @@ class NMF:
             max_iterations_D=2e1,
             max_iterations_S=2e1,
             tolerance=1e-8,
-            W=None,
-            H=None
+            W_input=None,
+            H_input=None
     ):
         """
         Docstring for volume_regularisation_NMF
@@ -565,32 +567,39 @@ class NMF:
             # Divide each variable by that std deviation
             X_scaled_mat  = self.X_data_mat_adj / X_std_dev_vec[:, np.newaxis]
             # This is the second-moment form for Gaussian random variables
-            P_cov_Poisson_data_mat = X_scaled_mat @ X_scaled_mat.T
-            P_coeff = (1 / P_cov_Poisson_data_mat.max())
+            P_cov_data_mat = X_scaled_mat @ X_scaled_mat.T
+            P_coeff = (1 / P_cov_data_mat.max())
             # Divide the matrix by the largest value
-            P_cov_Poisson_data_mat = P_coeff * P_cov_Poisson_data_mat
+            P_cov_data_mat = P_coeff * P_cov_data_mat
+            print("P",P_cov_data_mat[:4:,:5])
         if (data_type == "Poisson"):
             # This is the second-moment form for Poisson random variables
             # Version 1 (no dividing by the standard deviation)
-            P_cov_Poisson_data_mat = self.X_data_mat_adj @ self.X_data_mat_adj.T - np.diag( self.X_data_mat_adj.sum(axis=1) )
+            P_cov_data_mat = self.X_data_mat_adj @ self.X_data_mat_adj.T - np.diag( self.X_data_mat_adj.sum(axis=1) )
             # Version 2 (divide variables by the standard deviation) [thus far unsuccessful]
             # X_scaled_mat = self.X_data_mat_adj / X_std_dev_vec[:, np.newaxis] 
-            # P_cov_Poisson_data_mat = X_scaled_mat @ X_scaled_mat.T - np.diag( self.X_data_mat_adj.sum(axis=1) / X_std_dev_vec[:, np.newaxis]**2 )
-        P_u, P_d, _ = np.linalg.svd(P_cov_Poisson_data_mat)
+            # P_cov_data_mat = X_scaled_mat @ X_scaled_mat.T - np.diag( self.X_data_mat_adj.sum(axis=1) / X_std_dev_vec[:, np.newaxis]**2 )
+        P_u, P_d, _ = np.linalg.svd(P_cov_data_mat)
 
         # --------------------------------------------------------------------------- #
         # Initialise all parameters needed for NMF implementation
         B_sqrt_Poisson_data_mat = -P_u[:,:num_singular_vals] @ np.diag(np.sqrt(P_d[:num_singular_vals]))
-
+        print("B",B_sqrt_Poisson_data_mat[:4,:5])
         # Combine X=BQ and record all initial matrices
-        if (H is None) or (W is None):
-            D_iter = self.D_exposures_sqrt_mat_init
+        if (H_input is None) or (W_input is None):
+            if (data_type == "Gaussian"):
+                D_iter = self.D_exposures_sqrt_mat_init
+            if (data_type == "Poisson"):
+                D_iter = self.X_data_mat_adj.max() * self.D_exposures_sqrt_mat_init
             S_iter = self.W_signatures_mat_init
             Q_iter = self.Q_Procrustes_orthogonal_mat_init[:num_singular_vals,:]
+            print("D",D_iter[:4,:5])
+            print("S",S_iter[:4,:5])
+            print("Q",Q_iter[:4,:5])
         else:
             # If W and H is provided, use those to construct the S and D matrices, which will also require finding a Q
-            S_iter = W[self.which_vars_to_keep,:]
-            D_iter = H @ H.T
+            S_iter = W_input[self.which_vars_to_keep,:]
+            D_iter = H_input @ H_input.T
             D_u, D_d, _ = np.linalg.svd(D_iter)
             D_iter = -D_u @ np.diag(np.sqrt(D_d))
             Q_iter = self.__solve_for_Q(B_sqrt_Poisson_data_mat, S_iter, D_iter)
