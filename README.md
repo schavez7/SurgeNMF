@@ -11,7 +11,7 @@ Last updated README: 17 June 2026
 |---|---|
 | `job_test_one_nmf.sh` | Lance une seule instance de NMF |
 | `job_test_full_analysis.sh` | Lance l'analyse complète avec bootstrap et grid search |
-| `job_vrNMF.sh` | Lance une seule instance de vr-NMF (version R) |
+| `job_test_vrNMF.sh` | Lance une seule instance de vr-NMF (version R) |
 
 ### Scripts Python
 | Fichier | Short Description |
