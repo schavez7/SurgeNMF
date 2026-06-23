@@ -35,12 +35,12 @@ Last updated README: 17 June 2026
 ### `job_test_one_nmf.sh`
 
 ```bash
-bash job_test_one_nmf.sh --dossier Results --num_sigs 4 --num_obs 250 --seed 1
+bash job_test_one_nmf.sh --dossier Results_S --num_sigs 4 --num_obs 250 --seed 1
 ```
 
 ### `job_test_full_analysis.sh`
 ```bash
-bash job_test_full_analysis.sh --dossier Results --num_sigs 4 --num_obs 250 --seed 1
+bash job_test_full_analysis.sh --dossier Results_F --num_sigs 4 --num_obs 250 --seed 1
 ```
 
 ### `job_test_vrNMF.sh` 
