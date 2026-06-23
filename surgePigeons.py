@@ -43,7 +43,7 @@ ref_colonnes = ref.columns
 which_sigs_nombres = rng.permutation(ref.shape[1])[:num_sigs]
 which_sigs_noms = ['SBS1', 'SBS4', 'SBS7c', 'SBS13']
 # which_sigs_noms    = list(ref_colonnes[which_sigs_nombres])
-print(f"   α) Vous avez choisi {num_sigs} signatures et il sont:")
+print(f"\n   α) Vous avez choisi {num_sigs} signatures et il sont:")
 print("\t",which_sigs_noms,"\n")
 
 # Sauvegarder les noms des signatures 

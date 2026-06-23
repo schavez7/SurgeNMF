@@ -571,7 +571,6 @@ class NMF:
             P_coeff = (1 / P_cov_data_mat.max())
             # Divide the matrix by the largest value
             P_cov_data_mat = P_coeff * P_cov_data_mat
-            print("P",P_cov_data_mat[:4:,:5])
         if (data_type == "Poisson"):
             # This is the second-moment form for Poisson random variables
             # Version 1 (no dividing by the standard deviation)
@@ -579,6 +578,7 @@ class NMF:
             # Version 2 (divide variables by the standard deviation) [thus far unsuccessful]
             # X_scaled_mat = self.X_data_mat_adj / X_std_dev_vec[:, np.newaxis] 
             # P_cov_data_mat = X_scaled_mat @ X_scaled_mat.T - np.diag( self.X_data_mat_adj.sum(axis=1) / X_std_dev_vec[:, np.newaxis]**2 )
+        print("P",P_cov_data_mat[:4:,:5],"\n")
         P_u, P_d, _ = np.linalg.svd(P_cov_data_mat)
 
         # --------------------------------------------------------------------------- #
@@ -593,9 +593,11 @@ class NMF:
                 D_iter = self.X_data_mat_adj.max() * self.D_exposures_sqrt_mat_init
             S_iter = self.W_signatures_mat_init
             Q_iter = self.Q_Procrustes_orthogonal_mat_init[:num_singular_vals,:]
-            print("D",D_iter[:4,:5])
-            print("S",S_iter[:4,:5])
-            print("Q",Q_iter[:4,:5])
+            print("D",D_iter[:4,:5],"\n")
+            print("S",S_iter[:4,:5],"\n")
+            F = (B_sqrt_Poisson_data_mat @ Q_iter) - (S_iter @ D_iter)
+            print("All:",F[:4,:5])
+            print("\n----------------\n")
         else:
             # If W and H is provided, use those to construct the S and D matrices, which will also require finding a Q
             S_iter = W_input[self.which_vars_to_keep,:]
