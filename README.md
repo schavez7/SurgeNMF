@@ -41,7 +41,12 @@ bash job_test_one_nmf.sh --dossier Results --num_sigs 4 --num_obs 250 --seed 1
 
 ### `job_test_full_analysis.sh`
 ```bash
-bash job_test_full_analysis.sh --dossier Results --num_sigs 4 --num_obs 250 --seed 42
+bash job_test_full_analysis.sh --dossier Results --num_sigs 4 --num_obs 250 --seed 1
+```
+
+### `job_test_vrNMF.sh` 
+```bash
+bash job_test_vrNMF.sh --dossier Results_R --num_sigs 4 --num_obs 250 --seed 1
 ```
 
 ## Les méthodes de NMF dans `surgeNMF.py`
