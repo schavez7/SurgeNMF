@@ -18,9 +18,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, silhouette_samples
 import time
 
-from surgeNMF import NMF
-from surgePeacock import plot_signatures
-from surgeCrows import Crows
+from surgeNMF.surgeNMF import NMF
+from surgeNMF.surgePeacock import plot_signatures
+from surgeNMF.surgeCrows import Crows
 
 import os
 import sys

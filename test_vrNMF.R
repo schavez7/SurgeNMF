@@ -90,15 +90,25 @@ colnames(S.full) <- paste("Sig", 1:ncol(S.full))
 
 # Plot 
 fichier.pdf.path <- file.path(dir.resultat, "denovo_sigs_vrnmf.pdf")
-pdf(fichier.pdf.path, width=10, height=6)
-show_sig_profile( 
+# suppressWarnings({
+#     pdf(fichier.pdf.path, width=10, height=6)
+#     show_sig_profile( 
+#         S.full,
+#         mode = "SBS", 
+#         style = "cosmic",
+#         y_lab = paste("Vol-reg NMF devono signatures")
+#     )
+#     dev.off()
+# })
+
+p <- show_sig_profile(
     S.full,
-    mode = "SBS", 
+    mode = "SBS",
     style = "cosmic",
-    y_lab = paste("Vol-reg NMF devono signatures")
+    y_lab = paste("Volume NMF plot", 1, "of", ncol(S.full))
 )
-dev.off()
-# p
-# ggsave(fichier.pdf.path, plot=p, width=10, height=6)
+suppressWarnings(
+    ggsave(fichier.pdf.path, plot=p, width=10, height=2*ncol(S.full) )
+)
 
 print("Ça marche!")

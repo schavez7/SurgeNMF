@@ -99,6 +99,7 @@ fi
 
 # --- Répertoires définis
 DIR_MAIN=$(pwd)
+DIR_SURGENMF=${DIR_MAIN}/"surgeNMF"
 DIR_RESULTATS=${DIR_MAIN}/"${NOM_RESULTATS%/}"
 DIR_SUB_RESULTATS_GAUSSIAN="${DIR_RESULTATS}/Results_Gaussian"
 DIR_SUB_RESULTATS_POISSON="${DIR_RESULTATS}/Results_Poisson"
@@ -125,7 +126,7 @@ PYTHON=/data/$USER/conda/envs/surgeNMFenv/bin/python
 # LES CODES PRINCIPAUX
 
 # --- Πρῶτος: Générer l'ensemble de data
-$PYTHON $DIR_MAIN/surgePigeons.py $FICHIER_INFO $DIR_DATA
+$PYTHON $DIR_SURGENMF/surgePigeons.py $FICHIER_INFO $DIR_DATA
 
 # --- Δεύτερος: Exécuter un NMF pour vérifier le code
 $PYTHON $DIR_MAIN/test_one_nmf.py $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS_GAUSSIAN $DIR_SUB_RESULTATS_POISSON 

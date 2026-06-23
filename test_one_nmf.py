@@ -27,8 +27,8 @@ import time
     # t1 = time.perf_counter()
     # print("np.delete:",t1-t0)
 
-from surgeNMF import NMF
-from surgePeacock import plot_signatures
+from surgeNMF.surgeNMF import NMF
+from surgeNMF.surgePeacock import plot_signatures
 
 
 # -------------------------------------------------------------------------------- #
@@ -68,7 +68,7 @@ data_Gaus_np = data_Gaus.to_numpy(dtype=float)
 data_Pois_np = data_Pois.to_numpy(dtype=float)
 
 # Load a reference so that we can extract its row names
-ref = pd.read_csv(f"/data/{os.getenv('USER')}/surgeNMF/Reference_SBS96_COSMIC_Catalogue_Ordered.txt", sep="\t", index_col=0)
+ref = pd.read_csv(f"/data/{os.getenv('USER')}/SurgeNMF/surgeNMF/Reference_SBS96_COSMIC_Catalogue_Ordered.txt", sep="\t", index_col=0)
 nomsLignes   = ref.index
 
 # Load true W used in data

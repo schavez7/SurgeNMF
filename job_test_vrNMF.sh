@@ -96,6 +96,7 @@ fi
 
 # --- Répertoires définis
 DIR_MAIN=$(pwd)
+DIR_SURGENMF=${DIR_MAIN}/"surgeNMF"
 DIR_RESULTATS=${DIR_MAIN}/"${NOM_RESULTATS%/}"
 DIR_SUB_RESULTATS="${DIR_RESULTATS}/Denovo_Sigs"
 DIR_DATA="${DIR_RESULTATS}/Input_Data"
@@ -125,7 +126,7 @@ module load R
 # LES CODES PRINCIPAUX
 
 # --- Πρῶτος: Générer l'ensemble de data
-$PYTHON $DIR_MAIN/surgePigeons.py $FICHIER_INFO $DIR_DATA
+$PYTHON $DIR_SURGENMF/surgePigeons.py $FICHIER_INFO $DIR_DATA
 
 # --- Δεύτερος: l'Analyse 
 Rscript test_vrNMF.R $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS 
