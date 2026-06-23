@@ -26,11 +26,10 @@ Last updated README: 17 June 2026
 | `test_vrNMF.R` | Runs default vrNMF as in [Seplyarskiy, 2021] |
 
 ### Fichiers additionnel 
-| Fichier | Short Description |
+| Fichiers ou dossiers | Short Description |
 |---|---|
 | `Reference_SBS96_COSMIC_Catalogue_Ordered.txt` | Le catalogue des signatures de COSMIC SBS96 ordonnées |
 | `VRNMF` | Dossier des fichiers pour vr-NMF | 
-​
 
 ## Comment les éxecuter 
 ### `job_test_one_nmf.sh`
