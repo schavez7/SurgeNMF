@@ -1,12 +1,32 @@
 # SurgeNMF: MV-NMF-4-MSA
 Minimum-volume non-negative matrix factorisation for mutational signature analysis
 
-Last updated README: 17 June 2026
+Last updated README: 23 June 2026
 
-## 📁 Les fichiers 🐍 🐦 🐧 🦅 🦜 🦢 🦉 🐓 🦩 🦆 🐤
+## 📁 Les dossiers 🐍 🐦 🐧 🦅 🦜 🦢 🦉 🐓 🦩 🦆 🐤
+
+### Scripts dans surgeNMF
+| Fichier | Short Description |
+|---|---|
+| `surgeNMF.py` | Classe NMF avec toutes les méthodes |
+| `surgePigeons.py` | 🕊️ Génère les données simulées |
+| `surgeCrows.py` | 🐦‍⬛ Clustering et sélection optimale |
+| `surgePeacock.py` | 🦚 Visualisation des signatures |
+| `Reference_SBS96_COSMIC_Catalogue_Ordered.txt` | Le catalogue des signatures de COSMIC SBS96 ordonnées |
+
+
+### Scripts dans VRNMF
+| Fichier | Short Description |
+|---|---|
+| `update_estimate.R` | |
+| `update_volume.R` | | 
+| `update_simplex.R` | |
+| `update_unitary.R` | |
+| `vpreprocess.R` | |
+
+## 📁 Fichiers pour tester 🐍 🐦 🐧 🦅 🦜 🦢 🦉 🐓 🦩 🦆 🐤
 
 ### 🔧 Scripts Bash 
-
 | Fichier | Short Description |
 |---|---|
 | `job_test_one_nmf.sh` | Lance une seule instance de NMF |
@@ -16,20 +36,10 @@ Last updated README: 17 June 2026
 ### Scripts Python
 | Fichier | Short Description |
 |---|---|
-| `surgeNMF.py` | Classe NMF avec toutes les méthodes |
-| `surgePigeons.py` | 🕊️ Génère les données simulées |
-| `surgeStarling.py` | Exécute les quatre versions de NMF |
-| `surgeCrows.py` | 🐦‍⬛ Clustering et sélection optimale |
-| `surgePeacock.py` | 🦚 Visualisation des signatures |
 | `test_one_nmf.py` | Tests just one nmf instance to ensure method works |
 | `test_full_analysis.py` | Tests the grid search for num of sigs and λ value on bootstrapped data |
 | `test_vrNMF.R` | Runs default vrNMF as in [Seplyarskiy, 2021] |
 
-### Fichiers additionnel 
-| Fichiers ou dossiers | Short Description |
-|---|---|
-| `Reference_SBS96_COSMIC_Catalogue_Ordered.txt` | Le catalogue des signatures de COSMIC SBS96 ordonnées |
-| `VRNMF` | Dossier des fichiers pour vr-NMF | 
 
 ## Comment les éxecuter 
 ### `job_test_one_nmf.sh`
