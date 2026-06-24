@@ -1,6 +1,6 @@
 # Apply VR-NMF for Gaussian data on same data 
 # 
-# Last update: 22 June 2026 
+# Last update: 23 June 2026 
 
 
 graphics.off()
@@ -74,7 +74,7 @@ num.vars.adj <- num.vars - num.of.low.mut.types
 
 # Leur analyse 
 vol <- vol_preprocess(t(X.data.mat.adj))
-volres <- volnmf_main(vol, n.comp = 4, wvol = 0, 
+volres <- volnmf_main(vol, n.comp = 4, wvol = 7.3e-4, 
                       n.iter = 3e+3, vol.iter = 1e+1, c.iter = 1e+1, 
                       extrapolate = TRUE, accelerate = TRUE, verbose = FALSE
 )

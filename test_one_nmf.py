@@ -1,7 +1,7 @@
 #!/data/$USER/conda/envs/surgeNMFenv/bin/python
 # coding: utf-8 
 """
-Last updated: 2 June 2026
+Last updated: 23 June 2026
 
 @author Sergio Chávez
 """
@@ -82,7 +82,7 @@ os.makedirs(output_sigs_dir, exist_ok=True)
 
 # -------------------------------------------------------------------------------- #
 # PARAMÈTRES
-lam = 0.0 
+lam = 0.0
 max_iterations_general = 5000
 max_iterations_D = 5
 max_iterations_S = 5

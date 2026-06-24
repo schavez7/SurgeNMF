@@ -1,7 +1,7 @@
 #!/data/$USER/conda/envs/surgeNMFenv/bin/python
 # coding: utf-8 
 """
-Last updated: 4 June 2026
+Last updated: 23 June 2026
 
 @author Sergio Chávez
 """
@@ -11,21 +11,21 @@ signatures of each run. The mean of each cluster is the final signature
 """
 
 
-import numpy as np 
+# import numpy as np 
 import pandas as pd
-import string
-from sklearn.cluster import KMeans
+# import string
+# from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, silhouette_samples
-import time
+# import time
 
-from surgeNMF.surgeNMF import NMF
-from surgeNMF.surgePeacock import plot_signatures
+# from surgeNMF.surgeNMF import NMF
+# from surgeNMF.surgePeacock import plot_signatures
 from surgeNMF.surgeCrows import Crows
 
 import os
 import sys
-from multiprocessing import Pool
-from functools import partial
+# from multiprocessing import Pool
+# from functools import partial
 
 
 
@@ -65,7 +65,8 @@ def main_function():
         max_num_sigs=5, 
         num_trials=20,
         num_cores=20,
-        which_nmf="VR Gaussian",
+        which_nmf="VR Poisson",
+        # which_nmf="VR Gaussian",
         # which_nmf="St Frob",
         seed=seed
     )
