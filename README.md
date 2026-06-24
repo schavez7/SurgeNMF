@@ -67,8 +67,9 @@ bash job_test_vrNMF.sh --dossier Results_R --num_sigs 4 --num_obs 250 --seed 1
 *  MV-NMF (assuming Poisson data)
 
 ## Travail pour Serge 
-* Ἄσκησις α´ - Verifier que VR-NMF fonctionne comme il doit
-* Ἄσκησις β´ - Créer des fichiers d'exemple pour data réelle 
+* Ἄσκησις α´ - Verifier que κορυξ fonctionne bien, il y a des problèmes
+* Ἄσκησις β´ - Créer les heatmaps for le résultat final
+* Ἄσκησις γ´ - Créer des fichiers d'exemple pour data réelle 
 
 ## Reférences
 * Lee et Seung. NMF papers (1999, 2001).
