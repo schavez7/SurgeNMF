@@ -62,12 +62,13 @@ def main_function():
         fichier_data, 
         dir_resultats_Gaus, 
         min_num_sigs=3, 
-        max_num_sigs=5, 
+        max_num_sigs=7, 
         num_trials=20,
         num_cores=20,
-        which_nmf="VR Poisson",
+        # which_nmf="VR Poisson",
         # which_nmf="VR Gaussian",
-        # which_nmf="St Frob",
+        which_nmf="St Frob",
+        Lambdas=[1, 1e-1],
         seed=seed
     )
 
@@ -87,79 +88,3 @@ def main_function():
 if __name__ == "__main__":
 
     main_function()
-
-    # # File paths (data, parameters,)
-    # datafilepath  = sys.argv[1]
-    # infopath  = sys.argv[2]
-    # plotspath = sys.argv[3]
-
-    # # Other passed parameters
-    # seed       = int(sys.argv[4])
-    # threshold  = float(sys.argv[5]) # Typically equal or larger than 0.85
-    # num_trials = int(sys.argv[6])   # Typically equal or larger than 20
-
-    # # # Plot some catalogues to understand how they look 
-    # # data_original_df = pd.read_csv(datafilepath, sep="\t", index_col=0)
-    # # data_original    = data_original_df.to_numpy(dtype=float)
-    # # plotfilename     = os.path.join(plotspath,"Sample_catalogues")
-    # # plot_signatures(data_original[:,:4],save_loc=plotfilename)
-
-    # # Signature search through these numbers and lambda values
-    # Sig_Range = range(3,6)
-    # Lambdas = [1, 5e-1, 1e-1, 5e-2, 1e-2, 5e-3,1e-3, 5e-4, 1e-4, 5e-5, 1e-5]
-
-    # # which_nmf = "St Frob"
-    # # for num_sigs in range(2,3):
-    # #     print("Number of signatures:",num_sigs,"------------------------------")
-    # #     W = nmf_clustering(seed, num_sigs, num_trials, which_nmf=which_nmf, lam=None, num_cores=8)
-
-    # # which_nmf = "VR Gaussian"
-    # which_nmf = "VR Poisson"
-
-    # Scores = np.zeros((len(Sig_Range),len(Lambdas)))
-    # for num_sigs in Sig_Range:
-    #     print("\nNumber of signatures:",num_sigs,"------------------------------")
-    #     for k in range(len(Lambdas)):
-    #         lam = Lambdas[k]
-    #         W, score_temp = nmf_clustering(seed, num_sigs, num_trials, which_nmf=which_nmf, lam=lam, num_cores=8, datafilepath=datafilepath)
-    #         Scores[num_sigs-Sig_Range[0],k] = score_temp 
-
-    # # *** Next: plot the winning signatures. This might have to go somewhere below
-
-
-    # # Default to best lambda in first signature try if no score is above threshold
-    # num_sigs_temp = 0
-    # row_max = Scores[0,:].max()
-    # lam_indx_temp = np.where(Scores[0,:] == row_max)[0][0]
-    # # print("  Best lambda value",Lambdas[lam_indx_temp],"is at index",lam_indx_temp)
-
-    # # Now test each other signature 
-    # for sig in range(1,len(Scores)):
-    #     # Take just one line and find its max 
-    #     ligne = Scores[sig]
-    #     max_val = max(ligne) 
-
-    #     # Next find its location relative to the line and pull out its value 
-    #     ind = np.where(ligne==max_val)[0][0]
-    #     val = ligne[ind] 
-        
-    #     # Check and if still larger than the threshold, change it for that one
-    #     if (val >= threshold):
-    #         num_sigs_temp = sig 
-    #         lam_indx_temp = ind 
-
-    # # Collect and print into info.txt
-    # num_sigs = num_sigs_temp + Sig_Range[0]
-    # lam = Lambdas[lam_indx_temp]
-    # with open(infopath, "a") as f: 
-    #     f.write(f"num_sigs\t{num_sigs}\n")
-    #     f.write(f"lambda\t{lam}\n")
-
-    # print("\n")
-    # print("  Best signature is at",num_sigs)
-    # print("  Best lambda value",lam,"\n")
-
-    # # After obtaining a good lambda value rerun at more bootstraps
-    # W, _ = nmf_clustering(seed, num_sigs, 100, which_nmf=which_nmf, lam=lam, num_cores=8, datafilepath=datafilepath)
-    # plotfilename = os.path.join(plotspath,"GSNMF_VR_"+which_nmf)
-    # # plot_signatures(W,save_loc=plotfilename)
