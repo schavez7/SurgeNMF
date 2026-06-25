@@ -38,6 +38,9 @@ def bootstrap_data(
 
     # Ensure using a unique seed from the other bootstraps
     np.random.seed(seed)
+
+    # Faire une copie 
+    X_data_out = np.zeros(X_data.shape)
     
     _, num_obs = X_data.shape
     # Iterate through each column of input matrix
@@ -47,9 +50,9 @@ def bootstrap_data(
         pmf_of_col  = X_data[:,k] / num_total_mutations
 
         # Randomly create a new column
-        X_data[:,k] = np.random.multinomial(num_total_mutations, pmf_of_col)
+        X_data_out[:,k] = np.random.multinomial(num_total_mutations, pmf_of_col)
 
-    return X_data
+    return X_data_out
 
 
 def one_nmf_run(
@@ -61,14 +64,12 @@ def one_nmf_run(
         max_iterations_D,
         max_iterations_S, 
         which_nmf, 
-        datafilepath
+        data_original
 ):
     # Seed pour cet exécution
     seed_ici = (seed + num_sigs * 10000 + clustering_iter * 100) % (2**32 - 1)
     
-    # Load data 
-    data_original_df = pd.read_csv(datafilepath, sep="\t", index_col=0)
-    data_original = data_original_df.to_numpy(dtype=float)
+    # Construire les données bootstrap
     data_bootstrp = bootstrap_data(data_original, seed_ici)
 
     nmf_results = NMF(
@@ -212,6 +213,10 @@ def nmf_clustering(
     :param datafilepath: [txt file]
     """
 
+    # Télécharger les données
+    data_original_df = pd.read_csv(datafilepath, sep="\t", index_col=0)
+    data_original = data_original_df.to_numpy(dtype=float)
+
     # I) NMF
     # Prepare the parameters
     g = partial(one_nmf_run,
@@ -223,7 +228,7 @@ def nmf_clustering(
                 max_iterations_D=5,
                 max_iterations_S=5,
                 which_nmf=which_nmf,
-                datafilepath=datafilepath
+                data_original=data_original
     )
     
     # Exécuter le process parallèle

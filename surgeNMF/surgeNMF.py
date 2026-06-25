@@ -228,19 +228,6 @@ class NMF:
         W_iter = self.W_signatures_mat_init.copy()
         H_iter = self.H_exposures_mat_init.copy()
 
-        # print("-------------------------------------------------------------------------")
-        # print("\n             Initiating standard NMF with Frobenius norm             \n")
-        # print("-------------------------------------------------------------------------")
-        # print("\nSystem parameters:\n")
-        # print("\tNumber of samples:                ",self.num_obs)
-        # print("\tNumber of variables used:         ",self.num_vars_adj,"out of",self.num_vars)
-        # print("\tNumber of signatures seeking:     ",self.num_sigs)
-        # print("\n\tNumber of iterations: (general)   ",max_iterations)
-        # print("\n\tError tolerance:                  ",tolerance)
-        # print("\tSeed used:                        ",self.seed)
-        # print("\n\n")
-        # print("Starting analysis:\n")
-        # print("...\n")
         iter = 0
         err  = 1.
         # print("\tStarting analysis:\n\t...")
@@ -250,45 +237,22 @@ class NMF:
             # W numerator and denominator 
             W_num = self.X_data_mat_adj @ H_iter.T
             W_den = W_iter @ H_iter @ H_iter.T
-            for p in range(self.num_sigs):
-                for m in range(self.num_vars_adj):                    
-                    W_iter[m,p] = W_iter[m,p] * (W_num[m,p] / W_den[m,p])
-                    if np.isnan(W_iter[m,p]):
-                        print(W_iter[m,p],W_num[m,p],W_den[m,p])
-                        print(f"\nError in W at (iter,p,i)=({iter},{m},{p}). Witer[m,p]",W_iter[m,p],"\n")
-                        exit(1)
-            
-            # Note that WH=WD^{-1}DH where diagonal entries of D are sums of columns of W 
-            # D_diag = W_iter.sum(axis=0)
-            # W_iter = W_iter / D_diag**(-1)
-            # H_iter = np.diag(D_diag) @ H_iter 
+            W_iter = W_iter * (W_num / W_den) 
+            if np.any(np.isnan(W_iter)):
+                print("Erreur NaN dans W dans standard_NMF_Frobenius")
+                exit(1)
 
-            # W numerator and denominator 
+            # H numerator and denominator 
             H_num = W_iter.T @ self.X_data_mat_adj
             H_den = W_iter.T @ W_iter @ H_iter
-            
-            for p in range(self.num_sigs):       
-                for n in range(self.num_obs_adj):
-                    # print(p,n,"out of",self.num_sigs,self.num_obs)
-                    # if (iter == 1) and (p == 0) and (n == 310):
-                        # print(p,n,"out of",self.num_sigs,self.num_obs)
-                        # print(H_iter[p,n], H_num[p,n], H_den[p,n])
-                        # print(" ")
-                        # print(W_iter,"\n")
-                        # print(self.X_data_mat_adj,"\n")
-                        # print(W_iter.T @ self.X_data_mat_adj,"\n")
-                    H_iter[p,n] = H_iter[p,n] * (H_num[p,n] / H_den[p,n])
-                    if np.isnan(H_iter[p,n]):
-                        print(H_iter[p,n],H_num[p,n],H_den[p,n])
-                        print(f"\nError in H at (iter,p,n)=({iter},{p},{n}). Htemp[p,n]",H_iter[p,n],"\n")   
-                        exit(1)
+            H_iter = H_iter * (H_num / H_den)
+            if np.any(np.isnan(H_iter)):
+                print("Erreur NaN dans H dans standard_NMF_Frobenius")
+                exit(1)
 
             iter += 1
             err   = ((W_prev - W_iter)**2).sum() / (W_iter**2).sum()
-            # err   = np.linalg.norm(self.X_data_mat_adj - W_temp @ H_temp, ord="fro") / np.linalg.norm(self.X_data_mat_adj, ord="fro")
-
-        # print("\tfinished at iteration",iter,"out of",max_iterations,"with W relative error",err)
-
+   
         # Normalise W's columns and revert back to original number of rows while assuring H is proper size
         W_final = np.zeros((self.num_vars, self.num_sigs))
         W_final_col_sums = W_iter.sum(axis=0)

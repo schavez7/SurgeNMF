@@ -65,9 +65,9 @@ def main_function():
         max_num_sigs=6, 
         num_trials=20,
         num_cores=20,
-        which_nmf="VR Poisson",
+        # which_nmf="VR Poisson",
         # which_nmf="VR Gaussian",
-        # which_nmf="St Frob",
+        which_nmf="St Frob",
         # which_nmf="St KLd",
         Lambdas=[1, 5e-1, 1e-1, 5e-2, 1e-2, 5e-3],#, 1e-3, 5e-4, 1e-4],
         seed=seed
