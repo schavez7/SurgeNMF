@@ -18,14 +18,11 @@ import string
 from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
 from sklearn import metrics
-# from sklearn.cluster import KMeans
-# from sklearn.metrics import silhouette_score, silhouette_samples
 
 from surgeNMF.surgeNMF import NMF
 from surgeNMF.surgePeacock import plot_signatures, plot_against_cosmic
 
 import os
-import sys
 from multiprocessing import Pool
 from functools import partial
 
@@ -240,6 +237,7 @@ def nmf_clustering(
         k = item[0]
         W_all[:,num_sigs*k:num_sigs*(k+1)] = item[1]
 
+    print(f"\tLes NMFs sont trouvés!")
 
     # II) CLUSTERING
     # Preparer les paramètres 
@@ -264,12 +262,15 @@ def nmf_clustering(
     avgSilValParClust_meilleur = multi_clustering[avgSilVal_meilleur_idx][1]
     Signatures = multi_clustering[avgSilVal_meilleur_idx][2]
 
+    print(f"\tLe partitionnement est terminé!")
+
     return avgSilVal_meilleur, avgSilValParClust_meilleur, Signatures
 
 
 def save_info(
         W,          
         num_sigs,
+        which_nmf,
         avgSilWidth,
         dir_results,
         lam=None,
@@ -285,6 +286,8 @@ def save_info(
     # Sauvegarder le valeur de avgSilWidth
     fichier = os.path.join(dir_sous, "systeme_info.txt")
     with open(fichier, "w") as f:
+        f.write(f"which_nmf\t{which_nmf}\n")
+        f.write(f"num_sigs\t{num_sigs}\n")
         if lam is not None:
             f.write(f"lam\t{lam}\n")
         f.write(f"avgSilhouetteWidth\t{avgSilWidth}\n")
@@ -364,8 +367,8 @@ class Crows:
                 self.rng = np.random.default_rng(self.seed)
             except (TypeError, ValueError):
                 raise TypeError("Input seed must be convertible to an integer")
-
-        # Which method of NMF: {"St Frob", "St KLd", "VR Gaussian", "VR Poisson"}
+        if which_nmf not in {"St Frob", "St KLd", "VR Gaussian", "VR Poisson"}:
+            raise ValueError(f"which_nmf doit être l'un de: 'St Frob', 'St KLd', 'VR Gaussian', 'VR Poisson'. Reçu: {which_nmf}")
         self.which_nmf = which_nmf
 
         # Lambda values to search 
@@ -398,7 +401,7 @@ class Crows:
             for num_sigs, W in Wall.items():                
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
                 Wdf = pd.DataFrame(W, index=self.data_index, columns=which_sigs)
-                save_info(Wdf, num_sigs, Scores, dir_results=self.dir_results)
+                save_info(Wdf, num_sigs, self.which_nmf, Scores, dir_results=self.dir_results)
             
             # Ça nous donne l'index qui a la valeur la plus à droite qui est supérieure à 0.8
             candidats = np.where(Scores > 0.8)[0]
@@ -413,8 +416,8 @@ class Crows:
             # Sauvegarder la meilleur 
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
             Wdf = pd.DataFrame(Wall[optimal_num_sigs], index=self.data_index, columns=which_sigs)
-            save_info(Wdf, optimal_num_sigs, optimal_score, dir_results=self.dir_results, cosmic=True)
-            print(f"\n Optimal St: num_sigs={optimal_num_sigs}, score={optimal_score:.4f}")
+            save_info(Wdf, optimal_num_sigs, self.which_nmf, optimal_score, dir_results=self.dir_results, cosmic=True)
+            print(f"\n***Optimal St: num_sigs={optimal_num_sigs}, score={optimal_score:.4f}")
 
         # ----------------------------------------------------------------- #
         # CAS VOLUME-REGULARISATION (VR Gaussian, VR Poisson) — Scores est 2D
@@ -438,7 +441,7 @@ class Crows:
                 # Sauvegarder la meilleure solution pour ce num_sigs 
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
                 Wdf = pd.DataFrame(best_W_per_sig[num_sigs], index=self.data_index, columns=which_sigs)
-                save_info(Wdf, num_sigs, best_score, dir_results=self.dir_results, lam=best_lam)
+                save_info(Wdf, num_sigs, self.which_nmf ,best_score, dir_results=self.dir_results, lam=best_lam)
                 print(f" For num_sigs={num_sigs}: optimal lam={best_lam}, score={best_score:.4f}")
 
             # Trouver la solution globalement optimale 
@@ -456,8 +459,8 @@ class Crows:
             # Sauvegarder la solution globalement optimale
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
             Wdf = pd.DataFrame(best_W_per_sig[optimal_num_sigs], index=self.data_index, columns=which_sigs)
-            save_info(Wdf, optimal_num_sigs, optimal_score, dir_results=self.dir_results, lam=optimal_lam, cosmic=True)
-            print(f"\n  Optimal VR: num_sigs={optimal_num_sigs}, lam={optimal_lam}, score={optimal_score:.4f}")
+            save_info(Wdf, optimal_num_sigs, self.which_nmf, optimal_score, dir_results=self.dir_results, lam=optimal_lam, cosmic=True)
+            print(f"\n ***Optimal VR: num_sigs={optimal_num_sigs}, lam={optimal_lam}, score={optimal_score:.4f}")
 
 
     def __run(
@@ -480,7 +483,7 @@ class Crows:
             # For traditional Standard NMF
             if self.which_nmf in {"St Frob", "St KLd"}:
                 vr_version = False
-                score_temp, _, W = nmf_clustering(
+                avgSilVal_meilleur, avgSilValParClust_meilleur, W_meilleur = nmf_clustering(
                     self.seed, 
                     num_sigs, 
                     self.num_trials, 
@@ -489,15 +492,10 @@ class Crows:
                     num_cores=self.num_cores, 
                     datafilepath=self.file_data_txt
                 )
-                # print("  Score for",num_sigs,"number of signatures is",score_temp)
+                print("\tLe meilleur valeur de silhouette pour nombre de signatures",num_sigs,"est",avgSilVal_meilleur,"\n")
 
-                Wall_dict[num_sigs] = W
-                Scores[num_sigs-sig_range[0]] = score_temp
-            
-            # **** 
-            # Determine what to do here! 
-            # ****
-            exit()
+                Wall_dict[num_sigs] = W_meilleur
+                Scores[num_sigs-sig_range[0]] = avgSilVal_meilleur
 
             # For the volume-regularisation NMF
             if self.which_nmf in {"VR Gaussian", "VR Poisson"}:
@@ -505,7 +503,7 @@ class Crows:
                 for k in range(len(self.Lambdas)):
                     lam = self.Lambdas[k]
                     print("   Lambda values of", lam)
-                    score_temp, _, W = nmf_clustering(
+                    avgSilVal_meilleur, avgSilValParClust_meilleur, W_meilleur = nmf_clustering(
                         self.seed, 
                         num_sigs, 
                         self.num_trials, 
@@ -514,15 +512,12 @@ class Crows:
                         num_cores=self.num_cores, 
                         datafilepath=self.file_data_txt
                     )
-                    # print("   Score for",num_sigs,"number of signatures and lambda",lam,"is",score_temp)
+                    print("\tLe meilleur valeur de silhouette pour nombre de signatures",num_sigs," et valeur lambda",lam,"est",avgSilVal_meilleur,"\n")
 
-                    Wall_dict[num_sigs,lam] = W
-                    Scores[num_sigs-sig_range[0], k] = score_temp
-
-        # self.__choose_optimal(Wall_dict, vr_version, Scores)
-
-        # Save each vr_version ?
-        print("\nGood here")
+                    Wall_dict[num_sigs,lam] = W_meilleur
+                    Scores[num_sigs-sig_range[0], k] = avgSilVal_meilleur
+        
+        self.__choose_optimal(Wall_dict, vr_version, Scores)
     
 
 if __name__ == "__main__":
