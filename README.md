@@ -1,17 +1,18 @@
 # SurgeNMF: MV-NMF-4-MSA
 Minimum-volume non-negative matrix factorisation for mutational signature analysis
 
-Last updated README: 23 June 2026
+Last updated README: le 26 June 2026
 
 ## 📁 Les dossiers 🐍 🐦 🐧 🦅 🦜 🦢 🦉 🐓 🦩 🦆 🐤
 
 ### Scripts dans surgeNMF
 | Fichier | Short Description |
 |---|---|
-| `surgeNMF.py` | Classe NMF avec toutes les méthodes |
-| `surgePigeons.py` | 🕊️ Génère les données simulées |
-| `surgeCrows.py` | 🐦‍⬛ Clustering et sélection optimale |
-| `surgePeacock.py` | 🦚 Visualisation des signatures |
+| `surgeColumba.py` | 🕊️ Génère les données simulées |
+| `surgeGlaux.py` | 🦉 Classe NMF avec toutes les méthodes |
+| `surgeKorax.py` | 🐦‍⬛ Clustering et sélection optimale |
+| `surgeQuetzal.py` | Visualisation des signatures |
+| `surgeHuatzin.py` | Visualisation des heatmaps |
 | `Reference_SBS96_COSMIC_Catalogue_Ordered.txt` | Le catalogue des signatures de COSMIC SBS96 ordonnées |
 
 
@@ -58,9 +59,9 @@ bash job_test_full_analysis.sh --dossier Results_F --num_sigs 4 --num_obs 250 --
 bash job_test_vrNMF.sh --dossier Results_R --num_sigs 4 --num_obs 250 --seed 1
 ```
 
-## Les méthodes de NMF dans `surgeNMF.py`
+## Les méthodes de NMF dans `surgeGlaux.py`
 
-🐦 surgeNMF/ 
+🐦 surgeGlaux/ 
 *  Standard NMF (Frobenius norm)
 *  Standard NMF (Kullback-Leibler divergence)
 *  MV-NMF (assuming Gaussian data)
