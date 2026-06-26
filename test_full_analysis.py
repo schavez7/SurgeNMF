@@ -11,21 +11,13 @@ signatures of each run. The mean of each cluster is the final signature
 """
 
 
-# import numpy as np 
 import pandas as pd
-# import string
-# from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score, silhouette_samples
-# import time
+# from sklearn.metrics import silhouette_score, silhouette_samples
 
-# from surgeNMF.surgeNMF import NMF
-# from surgeNMF.surgePeacock import plot_signatures
-from surgeNMF.surgeCrows import Crows
+from surgeNMF.surgeKorax import Crows
 
 import os
 import sys
-# from multiprocessing import Pool
-# from functools import partial
 
 
 

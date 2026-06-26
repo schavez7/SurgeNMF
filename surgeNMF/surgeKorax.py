@@ -19,7 +19,7 @@ from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
 from sklearn import metrics
 
-from surgeNMF.surgeNMF import NMF
+from surgeNMF.surgeQuetzal import NMF
 from surgeNMF.surgePeacock import plot_signatures, plot_against_cosmic
 
 import os

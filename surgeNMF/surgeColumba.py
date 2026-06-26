@@ -10,7 +10,7 @@ import pandas as pd
 import sys
 import os
 
-from surgePeacock import plot_signatures
+from surgeQuetzal import plot_signatures
 
 
 # ----------------------------------------------------------------- #

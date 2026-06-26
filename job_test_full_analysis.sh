@@ -20,7 +20,7 @@ set -euo pipefail
 echo
 echo 
 echo " ________________________________________________________________________ "
-echo " Ξ                      SURGE CROWS EST COMMENCÉ                        Ξ "
+echo " Ξ                        SURGE NMF EST COMMENCÉ                        Ξ "
 echo " Ξ                              σεργιος                                 Ξ "
 echo " ------------------------------------------------------------------------ "
 echo
@@ -127,7 +127,7 @@ PYTHON=/data/$USER/conda/envs/surgeNMFenv/bin/python
 # LES CODES PRINCIPAUX
 
 # --- Πρῶτος: Générer l'ensemble de data
-$PYTHON $DIR_SURGENMF/surgePigeons.py $FICHIER_INFO $DIR_DATA
+$PYTHON $DIR_SURGENMF/surgeColumba.py $FICHIER_INFO $DIR_DATA
 
 # --- Δεύτερος: Exécuter un NMF pour vérifier le code
 $PYTHON $DIR_MAIN/test_full_analysis.py $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS_GAUSSIAN $DIR_SUB_RESULTATS_POISSON 

@@ -126,7 +126,7 @@ module load R
 # LES CODES PRINCIPAUX
 
 # --- Πρῶτος: Générer l'ensemble de data
-$PYTHON $DIR_SURGENMF/surgePigeons.py $FICHIER_INFO $DIR_DATA
+$PYTHON $DIR_SURGENMF/surgeColumba.py $FICHIER_INFO $DIR_DATA
 
 # --- Δεύτερος: l'Analyse 
 Rscript test_vrNMF.R $FICHIER_INFO $DIR_DATA $DIR_SUB_RESULTATS 

@@ -27,8 +27,8 @@ import time
     # t1 = time.perf_counter()
     # print("np.delete:",t1-t0)
 
-from surgeNMF.surgeNMF import NMF
-from surgeNMF.surgePeacock import plot_signatures
+from surgeNMF.surgeGlaux import NMF
+from surgeNMF.surgeQuetzal import plot_signatures
 
 
 # -------------------------------------------------------------------------------- #
