@@ -1,7 +1,7 @@
 #!/data/$USER/conda/envs/surgeNMFenv/bin/python
 # coding: utf-8 
 """
-Last updated: 23 June 2026
+Last updated: 29 June 2026
 
 @author Sergio Chávez
 """
@@ -28,8 +28,8 @@ import time
     # print("np.delete:",t1-t0)
 
 from surgeNMF.surgeGlaux import NMF
-from surgeNMF.surgeQuetzal import plot_signatures
-
+from surgeNMF.surgeQuetzal import plot_against_cosmic
+from surgeNMF.surgeHuatzin import plot_heatmap
 
 # -------------------------------------------------------------------------------- #
 # INITIAL INPUTS CHECK
@@ -107,13 +107,15 @@ nmf_results.standard_NMF_Frobenius(
 
 # Save the results
 nom_travail = "Std-NMF-Frob"
+nom_travail_dir = os.path.join(output_sigs_dir, nom_travail)
+os.makedirs(nom_travail_dir, exist_ok=True)
 print(">> St-NMF (Frobenious) finished at iteration", nmf_results.St_NMF_Frobenius["iter"],"out of",max_iterations_general)
-denovoSigsFilename = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs.txt")
+denovoSigsFilename = os.path.join(nom_travail_dir, "denovo-sigs.txt")
 Sigs_df = pd.DataFrame(nmf_results.St_NMF_Frobenius["W_final"], index=nomsLignes, columns=nomsColonnes_temp)
 Sigs_df.to_csv(denovoSigsFilename, sep="\t")
 
 # Sauvegarder l'information du système
-with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") as f:
+with open(os.path.join(output_sigs_dir, nom_travail+"/systeme_info.txt"), "w") as f:
     f.write(f"seed\t{seed}\n")
     f.write(f"num_sigs\t{num_sigs}\n")
     f.write(f"num_obs\t{num_obs}\n")
@@ -124,16 +126,10 @@ with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") a
     f.write(f"H_exposure_mat_vol\t{nmf_results.St_NMF_Frobenius['H_exposure_mat_vol']}\n")
     f.write(f"optimisation_func_val\t{nmf_results.St_NMF_Frobenius['optimisation_func_val']}\n")
 
-# Save a plot 
-plot_signatures(
+# # Save a plot 
+plot_against_cosmic(
     nmf_results.St_NMF_Frobenius["W_final"],
-    which_sigs = None,
-    W_alt = vrai_W,
-    title = "Standard NMF (Frobenius Norm) Gaussian data",
-    set1_name = "de novo sigs",
-    set2_name = "COSMIC sigs",
-    save_loc = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs"),
-    show_plot = False
+    save_dir=nom_travail_dir
 )
 
 
@@ -146,13 +142,15 @@ nmf_results.standard_NMF_Kullback_Leibler(
 
 # Sauvegarder les résultats
 nom_travail = "Std-NMF-KLd"
+nom_travail_dir = os.path.join(output_sigs_dir, nom_travail)
+os.makedirs(nom_travail_dir, exist_ok=True)
 print(">> St-NMF (Kullback-Leibler divergence) finished at iteration", nmf_results.St_NMF_KullbackLeibler["iter"],"out of",max_iterations_general)
-denovoSigsFilename = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs.txt")
+denovoSigsFilename = os.path.join(nom_travail_dir, "denovo-sigs.txt")
 Sigs_df = pd.DataFrame(nmf_results.St_NMF_KullbackLeibler["W_final"], index=nomsLignes, columns=nomsColonnes_temp)
 Sigs_df.to_csv(denovoSigsFilename, sep="\t")
 
 # Sauvegarder l'information du système
-with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") as f:
+with open(os.path.join(output_sigs_dir, nom_travail+"/systeme_info.txt"), "w") as f:
     f.write(f"seed\t{seed}\n")
     f.write(f"num_sigs\t{num_sigs}\n")
     f.write(f"num_obs\t{num_obs}\n")
@@ -164,15 +162,9 @@ with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") a
     f.write(f"optimisation_func_val\t{nmf_results.St_NMF_KullbackLeibler['optimisation_func_val']}\n")
 
 # Sauvegarder les plots 
-plot_signatures(
+plot_against_cosmic(
     nmf_results.St_NMF_KullbackLeibler["W_final"],
-    which_sigs = None,
-    W_alt = vrai_W,
-    title = "Standard NMF (Kullback-Leibler divergence) Gaussian data",
-    set1_name = "de novo sigs",
-    set2_name = "COSMIC sigs",
-    save_loc = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs"),
-    show_plot = False
+    save_dir=nom_travail_dir
 )
 
 
@@ -191,13 +183,15 @@ nmf_results.volume_regularisation_NMF_Gaussian(
 
 # Sauvegarder les résultats 
 nom_travail = "MV-NMF-Gaussian"
+nom_travail_dir = os.path.join(output_sigs_dir, nom_travail)
+os.makedirs(nom_travail_dir, exist_ok=True)
 print(">> MV-NMF for Gaussian data finished at iteration", nmf_results.VR_NMF_Gaussian["iter_general"], "out of", max_iterations_general)
-denovoSigsFilename = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs.txt")
+denovoSigsFilename = os.path.join(nom_travail_dir, "denovo-sigs.txt")
 Sigs_df = pd.DataFrame(nmf_results.VR_NMF_Gaussian["W_final"], index=nomsLignes, columns=nomsColonnes_temp)
 Sigs_df.to_csv(denovoSigsFilename, sep="\t")
 
 # Sauvegarder l'information du système
-with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") as f:
+with open(os.path.join(output_sigs_dir, nom_travail+"/systeme_info.txt"), "w") as f:
     f.write(f"seed\t{seed}\n")
     f.write(f"num_sigs\t{num_sigs}\n")
     f.write(f"num_obs\t{num_obs}\n")
@@ -211,15 +205,9 @@ with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") a
     f.write(f"optimisation_func_val\t{nmf_results.VR_NMF_Gaussian['optimisation_func_val'][-1]}\n")
 
 # Sauvegarder les plots 
-plot_signatures(
+plot_against_cosmic(
     nmf_results.VR_NMF_Gaussian["W_final"],
-    which_sigs = None,
-    W_alt = vrai_W,
-    title = "Min-Vol NMF (for Gaussian data) Gaussian data",
-    set1_name = "de novo sigs",
-    set2_name = "COSMIC sigs",
-    save_loc = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs"),
-    show_plot = False
+    save_dir=nom_travail_dir
 )
 
 
@@ -238,13 +226,15 @@ nmf_results.volume_regularisation_NMF_Poisson(
 
 # Sauvegarder les résultats 
 nom_travail = "MV-NMF-Poisson"
+nom_travail_dir = os.path.join(output_sigs_dir, nom_travail)
+os.makedirs(nom_travail_dir, exist_ok=True)
 print(">> MV-NMF for Poisson data finished at iteration", nmf_results.VR_NMF_Poisson["iter_general"], "out of", max_iterations_general)
-denovoSigsFilename = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs.txt")
+denovoSigsFilename = os.path.join(nom_travail_dir, "denovo-sigs.txt")
 Sigs_df = pd.DataFrame(nmf_results.VR_NMF_Poisson["W_final"], index=nomsLignes, columns=nomsColonnes_temp)
 Sigs_df.to_csv(denovoSigsFilename, sep="\t")
 
 # Sauvegarder l'information du système
-with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") as f:
+with open(os.path.join(output_sigs_dir, nom_travail+"/systeme_info.txt"), "w") as f:
     f.write(f"seed\t{seed}\n")
     f.write(f"num_sigs\t{num_sigs}\n")
     f.write(f"num_obs\t{num_obs}\n")
@@ -258,14 +248,9 @@ with open(os.path.join(output_sigs_dir, nom_travail+"_systeme_info.txt"), "w") a
     f.write(f"optimisation_func_val\t{nmf_results.VR_NMF_Poisson['optimisation_func_val'][-1]}\n")
 
 # Sauvegarder les plots 
-plot_signatures(
+plot_against_cosmic(
     nmf_results.VR_NMF_Poisson["W_final"],
-    which_sigs = None,
-    W_alt = vrai_W,
-    title = "Min-Vol NMF (for Poisson data) Gaussian data",
-    set1_name = "de novo sigs",
-    set2_name = "COSMIC sigs",
-    save_loc = os.path.join(output_sigs_dir, nom_travail+"_denovo-sigs"),
-    show_plot = False
+    save_dir=nom_travail_dir
 )
+
 

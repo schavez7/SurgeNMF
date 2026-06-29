@@ -1,8 +1,9 @@
-# surgePigeons.py
+# ----------------------------------------------------------------- #
+# surgeColumba.py
 # 
 #   Créer deux ensembles de data: une de Gausse et l'autre de Poisson
 # 
-# Last modified: Le 23 Juin 2026
+# Last modified: Le 26 Juin 2026
 # ----------------------------------------------------------------- #
 
 import numpy as np 

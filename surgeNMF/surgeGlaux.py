@@ -1,7 +1,12 @@
-#!/data/$USER/conda/envs/surgeNMFenv/bin/python
-# coding: utf-8 
+# ----------------------------------------------------------------- #
+# surgeGlaux.py: γλαυξ
+# 
+#   Faire la décomposition NMF avec une objet classe 
+# 
+# Last modified: Le 26 Juin 2026
+# ----------------------------------------------------------------- #
 """
-Last updated: 28 May 2026
+Last updated: Le 26 Juin 2026
 
 @author Sergio Chávez
 """

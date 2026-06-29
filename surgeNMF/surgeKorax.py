@@ -1,7 +1,16 @@
-#!/data/$USER/conda/envs/surgeNMFenv/bin/python
-# coding: utf-8 
+# ----------------------------------------------------------------- #
+# surgeKorax.py κόραξ
+# 
+#   Faire l'exécution d'une analyse complèt de NMF
+# 
+#   Tâches: 
+#      - Terminer la fontion de selecter le meilleur nombre de 
+#        signatures. Ça dedans est déjà premature. 
+# 
+# Last modified: Le 26 Juin 2026
+# ----------------------------------------------------------------- #
 """
-Last updated: 24 June 2026
+Last updated: 26 June 2026
 
 @author Sergio Chávez
 """
@@ -19,8 +28,9 @@ from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
 from sklearn import metrics
 
-from surgeNMF.surgeQuetzal import NMF
-from surgeNMF.surgePeacock import plot_signatures, plot_against_cosmic
+from surgeNMF.surgeGlaux import NMF
+from surgeNMF.surgeQuetzal import plot_signatures, plot_against_cosmic
+from surgeNMF.surgeHuatzin import plot_heatmap
 
 import os
 from multiprocessing import Pool
@@ -281,15 +291,8 @@ def save_info(
         lam=None,
         cosmic=False
 ):
-    # D'abord, créer le sous-répertoire pour ce résultat
-    if cosmic:
-        dir_sous = os.path.join(dir_results, "Optimal_Solution")
-    else:
-        dir_sous = os.path.join(dir_results, f"{num_sigs}")
-    os.makedirs(dir_sous, exist_ok=True)
-
     # Sauvegarder le valeur de avgSilWidth
-    fichier = os.path.join(dir_sous, "systeme_info.txt")
+    fichier = os.path.join(dir_results, "systeme_info.txt")
     with open(fichier, "w") as f:
         f.write(f"which_nmf\t{which_nmf}\n")
         f.write(f"num_sigs\t{num_sigs}\n")
@@ -297,16 +300,22 @@ def save_info(
             f.write(f"lam\t{lam}\n")
         f.write(f"avgSilhouetteWidth\t{avgSilWidth}\n")
 
-    # Sauvegarder les denovo signatures
-    fichier = os.path.join(dir_sous, "denovo_sigs_mat.txt")
+    # Sauvegarder les denovo signatures comme txt et pdf
+    fichier = os.path.join(dir_results, "denovo_sigs_mat.txt")
     W.to_csv(fichier, sep="\t")
 
-    fichier = os.path.join(dir_sous, "denovo_sigs")
-    plot_signatures(np.array(W),save_loc=fichier)
+    # Sauvegarder les denovo signatures comme pdf
+    fichier = os.path.join(dir_results, "denovo_sigs")
+    plot_signatures(np.array(W), save_loc=fichier)
 
+    # Sauvegarder les denovo signatures pdf en les comparant avec les COSMIC SBS96
     if cosmic:
-        fichier = os.path.join(dir_sous, "denovo_compare")
+        fichier = os.path.join(dir_results, "denovo_compare")
         plot_against_cosmic(np.array(W), save_loc=fichier)
+
+        # Avec pandas DataFrames
+        fichier = os.path.join(dir_results, "denovo_compare_heatmap")
+        plot_heatmap(np.array(W), titre="Compare de nove signatures to COSMIC", filepath=fichier)
 
 
 class Crows:
@@ -330,7 +339,8 @@ class Crows:
             num_cores=4,
             which_nmf="St Frob",
             Lambdas=None,
-            seed=None
+            seed=None,
+            cosmic=False
     ):
         """
         Docstring for __init__
@@ -375,6 +385,10 @@ class Crows:
         if which_nmf not in {"St Frob", "St KLd", "VR Gaussian", "VR Poisson"}:
             raise ValueError(f"which_nmf doit être l'un de: 'St Frob', 'St KLd', 'VR Gaussian', 'VR Poisson'. Reçu: {which_nmf}")
         self.which_nmf = which_nmf
+        try: 
+            self.cosmic = cosmic
+        except (ValueError):
+            raise ValueError("Input for cosmic must be ether True or False")
 
         # Lambda values to search 
         if Lambdas is None:
@@ -406,7 +420,10 @@ class Crows:
             for num_sigs, W in Wall.items():                
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
                 Wdf = pd.DataFrame(W, index=self.data_index, columns=which_sigs)
-                save_info(Wdf, num_sigs, self.which_nmf, Scores, dir_results=self.dir_results)
+
+                dir_sous = os.path.join(self.dir_results, f"{num_sigs}")
+                os.makedirs(dir_sous, exist_ok=True)
+                save_info(Wdf, num_sigs, self.which_nmf, Scores, dir_results=dir_sous, cosmic=self.cosmic)
             
             # Ça nous donne l'index qui a la valeur la plus à droite qui est supérieure à 0.8
             candidats = np.where(Scores > 0.8)[0]
@@ -421,7 +438,10 @@ class Crows:
             # Sauvegarder la meilleur 
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
             Wdf = pd.DataFrame(Wall[optimal_num_sigs], index=self.data_index, columns=which_sigs)
-            save_info(Wdf, optimal_num_sigs, self.which_nmf, optimal_score, dir_results=self.dir_results, cosmic=True)
+
+            dir_sous = os.path.join(self.dir_results, "Optimal_Solution")
+            os.makedirs(dir_sous, exist_ok=True)
+            save_info(Wdf, optimal_num_sigs, self.which_nmf, optimal_score, dir_results=dir_sous, cosmic=self.cosmic)
             print(f"\n***Optimal St: num_sigs={optimal_num_sigs}, score={optimal_score:.4f}")
 
         # ----------------------------------------------------------------- #
@@ -438,19 +458,22 @@ class Crows:
                 best_lam_index      = np.argmax(scores_for_this_sig)
                 best_lam            = self.Lambdas[best_lam_index]
                 best_score          = scores_for_this_sig[best_lam_index]
-
-                best_W_per_sig[num_sigs]     = Wall[num_sigs, best_lam]
+                
+                best_W_per_sig[num_sigs]     = Wall[num_sigs, best_lam_index]
                 best_score_per_sig[num_sigs] = best_score 
                 best_lam_per_sig[num_sigs]   = best_lam 
 
                 # Sauvegarder la meilleure solution pour ce num_sigs 
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
                 Wdf = pd.DataFrame(best_W_per_sig[num_sigs], index=self.data_index, columns=which_sigs)
-                save_info(Wdf, num_sigs, self.which_nmf ,best_score, dir_results=self.dir_results, lam=best_lam)
+
+                dir_sous = os.path.join(self.dir_results, f"{num_sigs}")
+                os.makedirs(dir_sous, exist_ok=True)
+                save_info(Wdf, num_sigs, self.which_nmf ,best_score, dir_results=dir_sous, lam=best_lam, cosmic=self.cosmic)
                 print(f" For num_sigs={num_sigs}: optimal lam={best_lam}, score={best_score:.4f}")
 
             # Trouver la solution globalement optimale 
-            best_scores_array = np.array([best_lam_per_sig[n] for n in sig_range])
+            best_scores_array = np.array([best_score_per_sig[n] for n in sig_range])
             candidats         = np.where(best_scores_array > 0.8)[0] 
             if len(candidats) == 0:
                 optimal_index = np.argmax(best_scores_array)
@@ -464,7 +487,10 @@ class Crows:
             # Sauvegarder la solution globalement optimale
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
             Wdf = pd.DataFrame(best_W_per_sig[optimal_num_sigs], index=self.data_index, columns=which_sigs)
-            save_info(Wdf, optimal_num_sigs, self.which_nmf, optimal_score, dir_results=self.dir_results, lam=optimal_lam, cosmic=True)
+
+            dir_sous = os.path.join(self.dir_results, "Optimal_Solution")
+            os.makedirs(dir_sous, exist_ok=True)
+            save_info(Wdf, optimal_num_sigs, self.which_nmf, optimal_score, dir_results=dir_sous, lam=optimal_lam, cosmic=self.cosmic)
             print(f"\n ***Optimal VR: num_sigs={optimal_num_sigs}, lam={optimal_lam}, score={optimal_score:.4f}")
 
 
@@ -519,7 +545,7 @@ class Crows:
                     )
                     print("\tLe meilleur valeur de silhouette pour nombre de signatures",num_sigs," et valeur lambda",lam,"est",avgSilVal_meilleur,"\n")
 
-                    Wall_dict[num_sigs,lam] = W_meilleur
+                    Wall_dict[num_sigs,k] = W_meilleur
                     Scores[num_sigs-sig_range[0], k] = avgSilVal_meilleur
         
         self.__choose_optimal(Wall_dict, vr_version, Scores)
