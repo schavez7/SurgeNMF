@@ -11,8 +11,8 @@ Last updated README: le 26 June 2026
 | `surgeColumba.py` | 🕊️ Génère les données simulées |
 | `surgeGlaux.py` | 🦉 Classe NMF avec toutes les méthodes |
 | `surgeKorax.py` | 🐦‍⬛ Clustering et sélection optimale |
-| `surgeQuetzal.py` | Visualisation des signatures |
-| `surgeHuatzin.py` | Visualisation des heatmaps |
+| `surgeQuetzal.py` | Visualisation des signatures et heatmap |
+| `surgeHuatzin.py` | Rien |
 | `Reference_SBS96_COSMIC_Catalogue_Ordered.txt` | Le catalogue des signatures de COSMIC SBS96 ordonnées |
 
 
@@ -69,8 +69,8 @@ bash job_test_vrNMF.sh --dossier Results_R --num_sigs 4 --num_obs 250 --seed 1
 
 ## Travail pour Serge 
 * Ἄσκησις α´ - Verifier que κορυξ fonctionne bien, il y a des problèmes
-* Ἄσκησις β´ - Créer les heatmaps for le résultat final
-* Ἄσκησις γ´ - Créer des fichiers d'exemple pour data réelle 
+* Ἄσκησις β´ - Créer des fichiers d'exemple pour data réelle 
+* Ἄσκησις γ´ - 
 
 ## Reférences
 * Lee et Seung. NMF papers (1999, 2001).
