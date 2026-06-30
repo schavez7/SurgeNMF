@@ -1,16 +1,18 @@
 # ----------------------------------------------------------------- #
 # surgeKorax.py κόραξ
 # 
-#   Faire l'exécution d'une analyse complèt de NMF
+#   Faire l'exécution d'une analyse complèt de NMF: Elle trouve le 
+#   nombre de signatures et le valeur de régularisation de volume λ 
 # 
 #   Tâches: 
 #      - Terminer la fontion de selecter le meilleur nombre de 
-#        signatures. Ça dedans est déjà premature. 
+#        signatures. Ça dedans est déjà premature. Elle doit être 
+#        similaire au SigProfilerExtractor peut-être. 
 # 
-# Last modified: Le 26 Juin 2026
+# Last modified: Le 29 Juin 2026
 # ----------------------------------------------------------------- #
 """
-Last updated: 26 June 2026
+Last updated: 29 June 2026
 
 @author Sergio Chávez
 """
@@ -30,7 +32,6 @@ from sklearn import metrics
 
 from surgeNMF.surgeGlaux import NMF
 from surgeNMF.surgeQuetzal import plot_signatures, plot_against_cosmic
-from surgeNMF.surgeHuatzin import plot_heatmap
 
 import os
 from multiprocessing import Pool
@@ -246,7 +247,7 @@ def nmf_clustering(
         nmf_results_opt_val = pool.map(g, range(num_trials))
 
     # Unload information on a super large W matrix
-    num_vars   = 96
+    num_vars   = data_original.shape[0]
     W_all = np.zeros((num_vars, num_sigs * num_trials))
     for item in nmf_results_opt_val:
         k = item[0]
@@ -310,12 +311,8 @@ def save_info(
 
     # Sauvegarder les denovo signatures pdf en les comparant avec les COSMIC SBS96
     if cosmic:
-        fichier = os.path.join(dir_results, "denovo_compare")
-        plot_against_cosmic(np.array(W), save_loc=fichier)
+        plot_against_cosmic(np.array(W), save_dir=dir_results)
 
-        # Avec pandas DataFrames
-        fichier = os.path.join(dir_results, "denovo_compare_heatmap")
-        plot_heatmap(np.array(W), titre="Compare de nove signatures to COSMIC", filepath=fichier)
 
 
 class Crows:
@@ -360,7 +357,7 @@ class Crows:
 
         # Obtenir les index de la data
         info = pd.read_csv(self.file_data_txt, sep="\t", header=0, index_col=0)
-        self.data_index = info.index.tolist()
+        self.data_index_names = info.index.tolist()
 
         # Preliminary tests and assignments
         try: 
@@ -419,7 +416,7 @@ class Crows:
             # Sauvegarder chaque num_sigs
             for num_sigs, W in Wall.items():                
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
-                Wdf = pd.DataFrame(W, index=self.data_index, columns=which_sigs)
+                Wdf = pd.DataFrame(W, index=self.data_index_names, columns=which_sigs)
 
                 dir_sous = os.path.join(self.dir_results, f"{num_sigs}")
                 os.makedirs(dir_sous, exist_ok=True)
@@ -437,7 +434,7 @@ class Crows:
         
             # Sauvegarder la meilleur 
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
-            Wdf = pd.DataFrame(Wall[optimal_num_sigs], index=self.data_index, columns=which_sigs)
+            Wdf = pd.DataFrame(Wall[optimal_num_sigs], index=self.data_index_names, columns=which_sigs)
 
             dir_sous = os.path.join(self.dir_results, "Optimal_Solution")
             os.makedirs(dir_sous, exist_ok=True)
@@ -465,7 +462,7 @@ class Crows:
 
                 # Sauvegarder la meilleure solution pour ce num_sigs 
                 which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:num_sigs]]
-                Wdf = pd.DataFrame(best_W_per_sig[num_sigs], index=self.data_index, columns=which_sigs)
+                Wdf = pd.DataFrame(best_W_per_sig[num_sigs], index=self.data_index_names, columns=which_sigs)
 
                 dir_sous = os.path.join(self.dir_results, f"{num_sigs}")
                 os.makedirs(dir_sous, exist_ok=True)
@@ -486,7 +483,7 @@ class Crows:
 
             # Sauvegarder la solution globalement optimale
             which_sigs = [f"Denovo Sig {i}" for i in alphabeta[:optimal_num_sigs]]
-            Wdf = pd.DataFrame(best_W_per_sig[optimal_num_sigs], index=self.data_index, columns=which_sigs)
+            Wdf = pd.DataFrame(best_W_per_sig[optimal_num_sigs], index=self.data_index_names, columns=which_sigs)
 
             dir_sous = os.path.join(self.dir_results, "Optimal_Solution")
             os.makedirs(dir_sous, exist_ok=True)

@@ -73,6 +73,8 @@ def plot_signatures(
     if ( (num_vars % 6) == 0):
         n = int(num_vars / 6)        
         colors = (["#D81B60"] * n) + (["#BFB3C3"] * n) + (["#1E88E5"] * n) + (["#004D40"] * n) + (["#FFC107"] * n) + (["#723838"] * n)
+    else:
+        colors = (["#008080"] * num_vars)
 
     # Hauteur totale de la figure selon le nombre de plots
     hauteur_totale = hauteur_par_plot * num_plots
@@ -105,35 +107,6 @@ def plot_signatures(
             plt.show()
         plt.close()
 
-        # # Keep count at which signatures we're at through the windows 
-        # iter = 0 
-        # for win in range(num_windows):
-        #     if show_plot:
-        #         print("\tWindow:",win+1," out of",num_windows,"open...")
-        #     figure, ax = plt.subplots(nrows=4, ncols=1)
-        #     if title is not None:
-        #         figure.suptitle(title)
-        #     figure.set_size_inches(8,8)
-        #     for p in range(4):
-        #         if (iter < num_plots):
-        #             ax[p].bar(range(1,num_vars+1), W[:,iter], color=colors, alpha=0.9)
-        #             if (iter < num_plots-1):
-        #                 ax[p].set_xticks([])
-        #                 ax[p].set_xticklabels([])
-        #             else:
-        #                 ax[p].set_xlabel("Variables")                        
-        #         else:
-        #             ax[p].axis('off') 
-        #         ax[p].set_title(noms_denovo[iter])
-        #         iter += 1
-        
-
-            # if save_loc is not None: 
-            #     if (num_windows > 1):
-            #         filename = save_loc + f"_{win+1}Of{num_windows}.png"
-            #     else: 
-            #         filename = save_loc + ".png"
-            #     plt.savefig(filename, dpi=300, bbox_inches="tight")
 
     # ----------------------------------------------------------------- #
     # Avec W_alt — comparaison de deux ensembles de signatures
@@ -171,45 +144,6 @@ def plot_signatures(
             plt.show()
         plt.close()
 
-
-        # # Keep count at which signatures we're at through the windows 
-        # iter = 0 
-        # for win in range(num_windows):
-        #     # print("--Window:",win+1," out of",num_windows)
-        #     figure, ax = plt.subplots(nrows=4, ncols=2)
-        #     figure.suptitle("Signatures compared")
-        #     figure.set_size_inches(12,8)
-        #     for p in range(4):
-        #         if (iter < num_plots):
-        #             # print("----Subplot num:",p," which is signature",noms_denovo[iter])
-        #             ax[p,0].bar(range(1,num_vars+1), W[:,row_ind[iter]], color=colors, alpha=0.9)
-        #             ax[p,1].bar(range(1,num_vars+1), Walt_np[:,col_ind[iter]], color=colors, alpha=0.9)
-        #             if (iter < num_plots-1):
-        #                 ax[p,0].set_xticks([])
-        #                 ax[p,1].set_xticks([])
-        #                 ax[p,0].set_xticklabels([])
-        #                 ax[p,1].set_xticklabels([])
-        #             else:
-        #                 ax[p,0].set_xlabel("Variables")
-        #                 ax[p,1].set_xlabel("Variables")
-        #             ax[p,0].set_title(f"Denovo {iter+1}")
-        #             ax[p,1].set_title(W_alt.columns[col_ind[iter]])
-        #         else:
-        #             ax[p,0].axis('off')
-        #             ax[p,1].axis('off')
-        #         iter += 1
-        #     # ax[0,0].set_title("True signatures")
-        #     # ax[0,1].set_title("Estimated signatures")
-        # # if set1_name is not None:
-        # #     ax[0,0].set_title(set1_name)
-        # #     ax[0,1].set_title(set2_name)
-
-        # if save_loc is not None: 
-        #     if (num_windows > 1):
-        #         filename = save_loc + f"_{win+1}Of{num_windows}.png"
-        #     else: 
-        #         filename = save_loc + ".png"
-        #     plt.savefig(filename, dpi=300, bbox_inches="tight")
     
 
 def plot_against_cosmic(
@@ -303,7 +237,7 @@ def plot_against_cosmic(
     ax.set_yticklabels(noms_denovo, fontsize=8)
     ax.set_xlabel("Signatures de référence")
     ax.set_ylabel("Signatures de-novo")
-    ax.set_title("de novo signatures against all COSMIC signatures")
+    ax.set_title("de novo signatures against closest COSMIC signatures")
 
     # Ajouter les valeurs dans chaque cellule
     for i in range(sim_matrix.shape[0]):
